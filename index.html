@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>會員訂閱戰情室</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="top-bar">
+      <div>
+        <p class="eyebrow">Subscription Dashboard</p>
+        <h1>會員訂閱戰情室</h1>
+        <p class="updated-text" id="updatedText">資料載入中...</p>
+      </div>
+
+      <button class="refresh-btn" id="refreshBtn" type="button">
+        重新整理
+      </button>
+    </header>
+
+    <section class="summary-grid">
+      <article class="summary-card total">
+        <span class="label">總會員</span>
+        <strong id="totalCount">0</strong>
+      </article>
+
+      <article class="summary-card trial">
+        <span class="label">試用中</span>
+        <strong id="trialCount">0</strong>
+      </article>
+
+      <article class="summary-card active">
+        <span class="label">付費中</span>
+        <strong id="activeCount">0</strong>
+      </article>
+
+      <article class="summary-card warning">
+        <span class="label">準備到期</span>
+        <strong id="warningCount">0</strong>
+      </article>
+
+      <article class="summary-card grace">
+        <span class="label">付款緩衝期</span>
+        <strong id="graceCount">0</strong>
+      </article>
+
+      <article class="summary-card expired">
+        <span class="label">已到期</span>
+        <strong id="expiredCount">0</strong>
+      </article>
+    </section>
+
+    <section class="control-panel">
+      <div class="search-box">
+        <input id="searchInput" type="search" placeholder="搜尋店家、帳號、方案..." />
+      </div>
+
+      <div class="filter-tabs" id="filterTabs">
+        <button class="tab active" data-filter="all">全部</button>
+        <button class="tab" data-filter="trial">試用</button>
+        <button class="tab" data-filter="active">付費</button>
+        <button class="tab" data-filter="warning">快到期</button>
+        <button class="tab" data-filter="grace">緩衝</button>
+        <button class="tab" data-filter="expired">到期</button>
+      </div>
+    </section>
+
+    <main>
+      <div class="section-title-row">
+        <h2>會員列表</h2>
+        <span id="resultCount">0 筆</span>
+      </div>
+
+      <div id="memberList" class="member-list">
+        <div class="empty-state">資料載入中...</div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
