@@ -51,32 +51,37 @@
     .app-shell {
       width: min(1120px, 100%);
       margin: 0 auto;
-      padding: 18px;
+      padding: 16px;
       padding-bottom: 40px;
     }
 
     .top-bar {
       display: flex;
-      gap: 14px;
+      gap: 12px;
       align-items: flex-start;
       justify-content: space-between;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
       padding-top: env(safe-area-inset-top);
     }
 
     .eyebrow {
       margin: 0 0 4px;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 12px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
-    h1 {
+    h1,
+    h2 {
       margin: 0;
-      font-size: clamp(28px, 8vw, 44px);
       line-height: 1.08;
       letter-spacing: -0.04em;
+    }
+
+    .top-bar h2 {
+      font-size: clamp(30px, 8vw, 44px);
+      font-weight: 850;
     }
 
     .updated-text {
@@ -93,63 +98,134 @@
       padding: 11px 14px;
       white-space: nowrap;
       box-shadow: var(--shadow);
+      font-weight: 700;
     }
 
     .refresh-btn:active {
       transform: scale(0.98);
     }
 
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .summary-card {
-      background: var(--card);
+    /* 手機版：統計表格 */
+    .summary-panel {
+      background: rgba(255, 255, 255, 0.86);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 16px;
+      border-radius: 24px;
       box-shadow: var(--shadow);
-      min-height: 112px;
+      overflow: hidden;
+      margin-bottom: 14px;
+      backdrop-filter: blur(16px);
+    }
+
+    .summary-panel-head {
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid #eeeeee;
+      background: rgba(255, 255, 255, 0.68);
     }
 
-    .summary-card .label {
+    .summary-panel-head .title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #111827;
+    }
+
+    .summary-panel-head .hint {
+      font-size: 12px;
       color: var(--muted);
-      font-size: 14px;
     }
 
-    .summary-card strong {
-      font-size: 38px;
-      line-height: 1;
-      letter-spacing: -0.05em;
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
     }
 
-    .summary-card.total strong {
+    .summary-table tr {
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .summary-table tr:last-child {
+      border-bottom: 0;
+    }
+
+    .summary-table td {
+      padding: 12px 14px;
+      vertical-align: middle;
+    }
+
+    .summary-label {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #374151;
+      font-size: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .summary-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      display: inline-block;
+      flex: 0 0 auto;
+    }
+
+    .summary-dot.total {
+      background: var(--total);
+    }
+
+    .summary-dot.trial {
+      background: var(--trial);
+    }
+
+    .summary-dot.active {
+      background: var(--active);
+    }
+
+    .summary-dot.warning {
+      background: var(--warning);
+    }
+
+    .summary-dot.grace {
+      background: var(--grace);
+    }
+
+    .summary-dot.expired {
+      background: var(--expired);
+    }
+
+    .summary-value {
+      text-align: right;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      width: 1%;
+      white-space: nowrap;
+    }
+
+    .summary-value.total {
       color: var(--total);
     }
 
-    .summary-card.trial strong {
+    .summary-value.trial {
       color: var(--trial);
     }
 
-    .summary-card.active strong {
+    .summary-value.active {
       color: var(--active);
     }
 
-    .summary-card.warning strong {
+    .summary-value.warning {
       color: var(--warning);
     }
 
-    .summary-card.grace strong {
+    .summary-value.grace {
       color: var(--grace);
     }
 
-    .summary-card.expired strong {
+    .summary-value.expired {
       color: var(--expired);
     }
 
@@ -159,7 +235,7 @@
       z-index: 10;
       background: rgba(244, 245, 247, 0.88);
       backdrop-filter: blur(16px);
-      padding: 10px 0 12px;
+      padding: 8px 0 12px;
       margin-bottom: 8px;
     }
 
@@ -175,6 +251,7 @@
       padding: 14px 16px;
       outline: none;
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+      font-size: 16px;
     }
 
     .search-box input:focus {
@@ -200,6 +277,7 @@
       border-radius: 999px;
       padding: 9px 13px;
       white-space: nowrap;
+      font-weight: 700;
     }
 
     .tab.active {
@@ -217,7 +295,8 @@
 
     .section-title-row h2 {
       margin: 0;
-      font-size: 20px;
+      font-size: 22px;
+      font-weight: 850;
     }
 
     .section-title-row span {
@@ -270,7 +349,7 @@
       padding: 7px 10px;
       color: white;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
       white-space: nowrap;
     }
 
@@ -321,7 +400,7 @@
     .info-row .value {
       text-align: right;
       font-size: 14px;
-      font-weight: 650;
+      font-weight: 700;
       word-break: break-word;
     }
 
@@ -372,17 +451,93 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    @media (max-width: 420px) {
+      .app-shell {
+        padding: 14px;
+      }
+
+      .top-bar {
+        margin-bottom: 12px;
+      }
+
+      .top-bar h2 {
+        font-size: 34px;
+      }
+
+      .refresh-btn {
+        padding: 10px 13px;
+        font-size: 15px;
+      }
+
+      .updated-text {
+        font-size: 13px;
+      }
+
+      .summary-panel-head {
+        padding: 11px 13px;
+      }
+
+      .summary-table td {
+        padding: 10px 13px;
+      }
+
+      .summary-label {
+        font-size: 14px;
+      }
+
+      .summary-value {
+        font-size: 22px;
+      }
+    }
+
+    /* 電腦 / 平板：統計區橫向排列，但比原本更精簡 */
     @media (min-width: 760px) {
       .app-shell {
         padding: 28px;
       }
 
-      .summary-grid {
+      .summary-panel {
+        border-radius: 24px;
+      }
+
+      .summary-panel-head {
+        display: none;
+      }
+
+      .summary-table {
+        display: grid;
         grid-template-columns: repeat(6, minmax(0, 1fr));
       }
 
-      .summary-card {
-        min-height: 128px;
+      .summary-table tbody,
+      .summary-table tr {
+        display: contents;
+      }
+
+      .summary-table td {
+        display: block;
+        border-right: 1px solid #f0f0f0;
+      }
+
+      .summary-table tr:last-child td {
+        border-right: 1px solid #f0f0f0;
+      }
+
+      .summary-table tr:nth-child(6) td {
+        border-right: 0;
+      }
+
+      .summary-table tr {
+        border-bottom: 0;
+      }
+
+      .summary-label {
+        margin-bottom: 16px;
+      }
+
+      .summary-value {
+        text-align: left;
+        font-size: 34px;
       }
 
       .member-list {
@@ -410,36 +565,75 @@
       </button>
     </header>
 
-    <section class="summary-grid">
-      <article class="summary-card total">
-        <span class="label">總會員</span>
-        <strong id="totalCount">0</strong>
-      </article>
+    <section class="summary-panel" aria-label="會員訂閱統計">
+      <div class="summary-panel-head">
+        <span class="title">訂閱總覽</span>
+        <span class="hint">即時統計</span>
+      </div>
 
-      <article class="summary-card trial">
-        <span class="label">試用中</span>
-        <strong id="trialCount">0</strong>
-      </article>
+      <table class="summary-table">
+        <tbody>
+          <tr>
+            <td>
+              <span class="summary-label">
+                <span class="summary-dot total"></span>
+                總會員
+              </span>
+            </td>
+            <td class="summary-value total" id="totalCount">0</td>
+          </tr>
 
-      <article class="summary-card active">
-        <span class="label">付費中</span>
-        <strong id="activeCount">0</strong>
-      </article>
+          <tr>
+            <td>
+              <span class="summary-label">
+                <span class="summary-dot trial"></span>
+                試用中
+              </span>
+            </td>
+            <td class="summary-value trial" id="trialCount">0</td>
+          </tr>
 
-      <article class="summary-card warning">
-        <span class="label">準備到期</span>
-        <strong id="warningCount">0</strong>
-      </article>
+          <tr>
+            <td>
+              <span class="summary-label">
+                <span class="summary-dot active"></span>
+                付費中
+              </span>
+            </td>
+            <td class="summary-value active" id="activeCount">0</td>
+          </tr>
 
-      <article class="summary-card grace">
-        <span class="label">付款緩衝期</span>
-        <strong id="graceCount">0</strong>
-      </article>
+          <tr>
+            <td>
+              <span class="summary-label">
+                <span class="summary-dot warning"></span>
+                準備到期
+              </span>
+            </td>
+            <td class="summary-value warning" id="warningCount">0</td>
+          </tr>
 
-      <article class="summary-card expired">
-        <span class="label">已到期</span>
-        <strong id="expiredCount">0</strong>
-      </article>
+          <tr>
+            <td>
+              <span class="summary-label">
+                <span class="summary-dot grace"></span>
+                付款緩衝期
+              </span>
+            </td>
+            <td class="summary-value grace" id="graceCount">0</td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="summary-label">
+                <span class="summary-dot expired"></span>
+                已到期
+              </span>
+            </td>
+            <td class="summary-value expired" id="expiredCount">0</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
     <section class="control-panel">
@@ -472,7 +666,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbwg6lyxnds4INo6MtvE3NcIdl9xbbhNswZWSkr62yZLO9d86ocxoG8HEGPXZjeyMNuC/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycby7EfU8D75EEzbxxcb5W71ujEFeSO_5UVohkLov0e-UUup_UckRQezO_k4xjzUGnc4k/exec';
 
     const state = {
       members: [],
@@ -635,6 +829,9 @@
 
     function createMemberCard(member) {
       const daysText = formatLeftTime(member);
+      const timeRow = member.statusLevel === 'trial'
+        ? infoRow('試用限制', '內建 15 分鐘')
+        : infoRow('剩餘時間', daysText);
 
       return `
         <article class="member-card">
@@ -650,7 +847,7 @@
 
           <div class="info-grid">
             ${infoRow('方案', member.plan)}
-            ${infoRow('剩餘時間', daysText)}
+            ${timeRow}
             ${infoRow('付款狀態', member.paymentStatus || '-')}
             ${infoRow('試用到期', member.trialEnd || '-')}
             ${infoRow('訂閱到期', member.subEnd || '-')}
