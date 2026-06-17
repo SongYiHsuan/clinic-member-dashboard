@@ -135,32 +135,63 @@
       font-size: 12px;
       color: var(--muted);
     }
-
-    .summary-table {
+    .summary-table,
+    .summary-table tbody {
+      display: block;
       width: 100%;
-      border-collapse: collapse;
     }
-
+    
+    .summary-table tbody {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    
     .summary-table tr {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+      min-height: 86px;
+      padding: 12px 10px;
       border-bottom: 1px solid #f0f0f0;
+      border-right: 1px solid #f0f0f0;
     }
-
-    .summary-table tr:last-child {
+    
+    .summary-table tr:nth-child(3),
+    .summary-table tr:nth-child(6) {
+      border-right: 0;
+    }
+    
+    .summary-table tr:nth-child(4),
+    .summary-table tr:nth-child(5),
+    .summary-table tr:nth-child(6) {
       border-bottom: 0;
     }
-
+    
     .summary-table td {
-      padding: 12px 14px;
-      vertical-align: middle;
+      display: block;
+      padding: 0;
+      border: 0;
     }
-
+    
     .summary-label {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 7px;
       color: #374151;
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+      line-height: 1.1;
+    }
+    
+    .summary-value {
+      text-align: left;
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      width: auto;
       white-space: nowrap;
     }
 
@@ -194,15 +225,6 @@
 
     .summary-dot.expired {
       background: var(--expired);
-    }
-
-    .summary-value {
-      text-align: right;
-      font-size: 24px;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      width: 1%;
-      white-space: nowrap;
     }
 
     .summary-value.total {
@@ -451,44 +473,57 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    @media (max-width: 420px) {
-      .app-shell {
-        padding: 14px;
-      }
-
-      .top-bar {
-        margin-bottom: 12px;
-      }
-
-      .top-bar h2 {
-        font-size: 34px;
-      }
-
-      .refresh-btn {
-        padding: 10px 13px;
-        font-size: 15px;
-      }
-
-      .updated-text {
-        font-size: 13px;
-      }
-
-      .summary-panel-head {
-        padding: 11px 13px;
-      }
-
-      .summary-table td {
-        padding: 10px 13px;
-      }
-
-      .summary-label {
-        font-size: 14px;
-      }
-
-      .summary-value {
-        font-size: 22px;
-      }
+   @media (max-width: 420px) {
+    .app-shell {
+      padding: 14px;
     }
+  
+    .top-bar {
+      margin-bottom: 12px;
+    }
+  
+    .top-bar h2 {
+      font-size: 34px;
+    }
+  
+    .refresh-btn {
+      padding: 10px 13px;
+      font-size: 15px;
+    }
+  
+    .updated-text {
+      font-size: 13px;
+    }
+  
+    .summary-panel-head {
+      padding: 9px 12px;
+    }
+  
+    .summary-panel {
+      border-radius: 22px;
+      margin-bottom: 12px;
+    }
+  
+    .summary-table tr {
+      min-height: 76px;
+      padding: 10px 8px;
+      gap: 7px;
+    }
+  
+    .summary-label {
+      font-size: 12.5px;
+      gap: 6px;
+    }
+  
+    .summary-dot {
+      width: 7px;
+      height: 7px;
+    }
+  
+    .summary-value {
+      font-size: 27px;
+    }
+  }
 
     /* 電腦 / 平板：統計區橫向排列，但比原本更精簡 */
     /* 電腦 / 平板：統計區改成穩定 6 欄，不使用 table grid 混排 */
@@ -506,17 +541,9 @@
         display: none;
       }
     
-      .summary-table,
       .summary-table tbody {
-        display: block;
-        width: 100%;
-      }
-    
-      .summary-table tbody {
-        display: grid;
         grid-template-columns: repeat(6, minmax(0, 1fr));
       }
-    
       .summary-table tr {
         display: flex;
         flex-direction: column;
