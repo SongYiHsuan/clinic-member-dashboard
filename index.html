@@ -4,8 +4,398 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>會員訂閱戰情室</title>
-  <link rel="stylesheet" href="./styles.css" />
+
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --text: #171717;
+      --muted: #707070;
+      --line: #e8e8e8;
+
+      --total: #111827;
+      --trial: #2563eb;
+      --active: #059669;
+      --warning: #d97706;
+      --grace: #7c3aed;
+      --expired: #dc2626;
+      --inactive: #6b7280;
+
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 32%),
+        radial-gradient(circle at top right, rgba(5, 150, 105, 0.1), transparent 28%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .app-shell {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding: 18px;
+      padding-bottom: 40px;
+    }
+
+    .top-bar {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding-top: env(safe-area-inset-top);
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 8vw, 44px);
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+    }
+
+    .updated-text {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .refresh-btn {
+      border: 0;
+      background: #111827;
+      color: white;
+      border-radius: 999px;
+      padding: 11px 14px;
+      white-space: nowrap;
+      box-shadow: var(--shadow);
+    }
+
+    .refresh-btn:active {
+      transform: scale(0.98);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .summary-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      min-height: 112px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .summary-card .label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .summary-card strong {
+      font-size: 38px;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .summary-card.total strong {
+      color: var(--total);
+    }
+
+    .summary-card.trial strong {
+      color: var(--trial);
+    }
+
+    .summary-card.active strong {
+      color: var(--active);
+    }
+
+    .summary-card.warning strong {
+      color: var(--warning);
+    }
+
+    .summary-card.grace strong {
+      color: var(--grace);
+    }
+
+    .summary-card.expired strong {
+      color: var(--expired);
+    }
+
+    .control-panel {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(244, 245, 247, 0.88);
+      backdrop-filter: blur(16px);
+      padding: 10px 0 12px;
+      margin-bottom: 8px;
+    }
+
+    .search-box {
+      margin-bottom: 10px;
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: white;
+      padding: 14px 16px;
+      outline: none;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+    }
+
+    .search-box input:focus {
+      border-color: #111827;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .filter-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      background: white;
+      color: #333;
+      border-radius: 999px;
+      padding: 9px 13px;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      background: #111827;
+      border-color: #111827;
+      color: white;
+    }
+
+    .section-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 14px 2px 10px;
+    }
+
+    .section-title-row h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .section-title-row span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .member-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .member-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .member-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .member-title {
+      min-width: 0;
+    }
+
+    .member-title h3 {
+      margin: 0 0 4px;
+      font-size: 20px;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .member-title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      word-break: break-all;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 7px 10px;
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge.trial {
+      background: var(--trial);
+    }
+
+    .badge.active {
+      background: var(--active);
+    }
+
+    .badge.warning {
+      background: var(--warning);
+    }
+
+    .badge.grace {
+      background: var(--grace);
+    }
+
+    .badge.expired {
+      background: var(--expired);
+    }
+
+    .badge.inactive {
+      background: var(--inactive);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .info-row .key {
+      color: var(--muted);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .info-row .value {
+      text-align: right;
+      font-size: 14px;
+      font-weight: 650;
+      word-break: break-word;
+    }
+
+    .reason {
+      margin-top: 12px;
+      padding: 12px;
+      background: #f8fafc;
+      border-radius: 16px;
+      color: #374151;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .empty-state {
+      padding: 34px 18px;
+      background: white;
+      border: 1px dashed #d1d5db;
+      border-radius: var(--radius);
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      background: rgba(17, 24, 39, 0.94);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 999px;
+      transition: 0.2s ease;
+      font-size: 14px;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (min-width: 760px) {
+      .app-shell {
+        padding: 28px;
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+
+      .summary-card {
+        min-height: 128px;
+      }
+
+      .member-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
 </head>
+
 <body>
   <div class="app-shell">
     <header class="top-bar">
@@ -81,6 +471,262 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="./app.js"></script>
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxM2Gu7toSPRp2Cmvp5UtNQyJaO1SgTDthL78JNuAsQoaeJ3JhxrXSEh6ljFL6RTUVi/exec';
+
+    const state = {
+      members: [],
+      filter: 'all',
+      keyword: ''
+    };
+
+    const el = {
+      updatedText: document.getElementById('updatedText'),
+      totalCount: document.getElementById('totalCount'),
+      trialCount: document.getElementById('trialCount'),
+      activeCount: document.getElementById('activeCount'),
+      warningCount: document.getElementById('warningCount'),
+      graceCount: document.getElementById('graceCount'),
+      expiredCount: document.getElementById('expiredCount'),
+      memberList: document.getElementById('memberList'),
+      resultCount: document.getElementById('resultCount'),
+      refreshBtn: document.getElementById('refreshBtn'),
+      searchInput: document.getElementById('searchInput'),
+      filterTabs: document.getElementById('filterTabs'),
+      toast: document.getElementById('toast')
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      bindEvents();
+      loadDashboard();
+    });
+
+    function bindEvents() {
+      el.refreshBtn.addEventListener('click', () => {
+        loadDashboard();
+      });
+
+      el.searchInput.addEventListener('input', event => {
+        state.keyword = event.target.value.trim().toLowerCase();
+        renderMembers();
+      });
+
+      el.filterTabs.addEventListener('click', event => {
+        const btn = event.target.closest('.tab');
+        if (!btn) return;
+
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        btn.classList.add('active');
+
+        state.filter = btn.dataset.filter;
+        renderMembers();
+      });
+    }
+
+    function loadDashboard() {
+      if (!API_URL || API_URL.includes('請貼上')) {
+        showError('請先在 index.html 裡面貼上 Apps Script Web App URL');
+        return;
+      }
+
+      el.updatedText.textContent = '資料更新中...';
+      el.refreshBtn.disabled = true;
+      el.refreshBtn.textContent = '更新中';
+
+      jsonp(`${API_URL}?action=dashboard`)
+        .then(data => {
+          if (!data.success) {
+            throw new Error(data.message || '讀取失敗');
+          }
+
+          state.members = Array.isArray(data.members) ? data.members : [];
+
+          renderSummary(data.summary || {});
+          renderMembers();
+
+          el.updatedText.textContent = `最後更新：${data.updatedAt || '-'}`;
+          showToast('資料已更新');
+        })
+        .catch(error => {
+          console.error(error);
+          showError(error.message || '無法讀取資料');
+        })
+        .finally(() => {
+          el.refreshBtn.disabled = false;
+          el.refreshBtn.textContent = '重新整理';
+        });
+    }
+
+    function jsonp(url) {
+      return new Promise((resolve, reject) => {
+        const callbackName = `jsonpCallback_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
+        const separator = url.includes('?') ? '&' : '?';
+        const script = document.createElement('script');
+
+        const timer = setTimeout(() => {
+          cleanup();
+          reject(new Error('讀取逾時，請確認 Apps Script 是否部署成功'));
+        }, 15000);
+
+        window[callbackName] = data => {
+          cleanup();
+          resolve(data);
+        };
+
+        script.src = `${url}${separator}callback=${callbackName}&t=${Date.now()}`;
+        script.onerror = () => {
+          cleanup();
+          reject(new Error('無法連線到 Apps Script API'));
+        };
+
+        function cleanup() {
+          clearTimeout(timer);
+          delete window[callbackName];
+
+          if (script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
+        }
+
+        document.body.appendChild(script);
+      });
+    }
+
+    function renderSummary(summary) {
+      el.totalCount.textContent = summary.total || 0;
+      el.trialCount.textContent = summary.trial || 0;
+      el.activeCount.textContent = summary.active || 0;
+      el.warningCount.textContent = summary.warning || 0;
+      el.graceCount.textContent = summary.grace || 0;
+      el.expiredCount.textContent = summary.expired || 0;
+    }
+
+    function renderMembers() {
+      const members = getFilteredMembers();
+
+      el.resultCount.textContent = `${members.length} 筆`;
+
+      if (members.length === 0) {
+        el.memberList.innerHTML = `<div class="empty-state">沒有符合條件的會員</div>`;
+        return;
+      }
+
+      el.memberList.innerHTML = members.map(member => createMemberCard(member)).join('');
+    }
+
+    function getFilteredMembers() {
+      return state.members.filter(member => {
+        const matchFilter = state.filter === 'all' || member.statusLevel === state.filter;
+
+        const keywordSource = [
+          member.name,
+          member.account,
+          member.plan,
+          member.status,
+          member.paymentStatus,
+          member.note
+        ].join(' ').toLowerCase();
+
+        const matchKeyword = !state.keyword || keywordSource.includes(state.keyword);
+
+        return matchFilter && matchKeyword;
+      });
+    }
+
+    function createMemberCard(member) {
+      const daysText = formatLeftTime(member);
+
+      return `
+        <article class="member-card">
+          <div class="member-head">
+            <div class="member-title">
+              <h3>${escapeHtml(member.name)}</h3>
+              <p>${escapeHtml(member.account || '無帳號資料')}</p>
+            </div>
+            <span class="badge ${escapeHtml(member.statusLevel)}">
+              ${escapeHtml(member.status)}
+            </span>
+          </div>
+
+          <div class="info-grid">
+            ${infoRow('方案', member.plan)}
+            ${infoRow('剩餘時間', daysText)}
+            ${infoRow('付款狀態', member.paymentStatus || '-')}
+            ${infoRow('試用到期', member.trialEnd || '-')}
+            ${infoRow('訂閱到期', member.subEnd || '-')}
+            ${infoRow('緩衝到期', member.graceEnd || '-')}
+            ${infoRow('最後登入', member.lastLogin || '-')}
+            ${infoRow('資料列', `第 ${member.rowNumber} 列`)}
+          </div>
+
+          <div class="reason">
+            ${escapeHtml(member.statusReason || '')}
+          </div>
+
+          ${member.note ? `<div class="note">備註：${escapeHtml(member.note)}</div>` : ''}
+        </article>
+      `;
+    }
+
+    function infoRow(key, value) {
+      return `
+        <div class="info-row">
+          <span class="key">${escapeHtml(key)}</span>
+          <span class="value">${escapeHtml(value || '-')}</span>
+        </div>
+      `;
+    }
+
+    function formatLeftTime(member) {
+      if (member.minutesLeft === null || member.minutesLeft === undefined) {
+        return '-';
+      }
+
+      if (member.minutesLeft <= 0) {
+        return '已到期';
+      }
+
+      if (member.minutesLeft < 60) {
+        return `${member.minutesLeft} 分鐘`;
+      }
+
+      if (member.daysLeft <= 1) {
+        const hours = Math.ceil(member.minutesLeft / 60);
+        return `${hours} 小時內`;
+      }
+
+      return `${member.daysLeft} 天`;
+    }
+
+    function showError(message) {
+      el.updatedText.textContent = `錯誤：${message}`;
+
+      el.memberList.innerHTML = `
+        <div class="empty-state">
+          ${escapeHtml(message)}
+        </div>
+      `;
+
+      showToast(message);
+    }
+
+    function showToast(message) {
+      el.toast.textContent = message;
+      el.toast.classList.add('show');
+
+      setTimeout(() => {
+        el.toast.classList.remove('show');
+      }, 2200);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+  </script>
 </body>
 </html>
