@@ -602,6 +602,131 @@
         font-size: 34px;
       }
     }
+    .basic-info-btn {
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      color: #111827;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    
+    .basic-info-btn:active {
+      transform: scale(0.98);
+    }
+    
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      background: rgba(17, 24, 39, 0.42);
+      backdrop-filter: blur(8px);
+      padding: 16px;
+    }
+    
+    .modal-backdrop.show {
+      display: flex;
+    }
+    
+    .basic-modal {
+      width: min(520px, 100%);
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+      overflow: hidden;
+      animation: modalUp 0.18s ease-out;
+    }
+    
+    @keyframes modalUp {
+      from {
+        transform: translateY(18px);
+        opacity: 0;
+      }
+    
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .basic-modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 18px 18px 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .basic-modal-title h3 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+    
+    .basic-modal-title p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      word-break: break-all;
+    }
+    
+    .modal-close-btn {
+      border: 0;
+      background: #f3f4f6;
+      color: #111827;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 800;
+    }
+    
+    .basic-modal-body {
+      padding: 8px 18px 18px;
+    }
+    
+    .basic-info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .basic-info-row:last-child {
+      border-bottom: 0;
+    }
+    
+    .basic-info-row .key {
+      color: var(--muted);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    
+    .basic-info-row .value {
+      color: #111827;
+      font-size: 15px;
+      font-weight: 800;
+      text-align: right;
+      word-break: break-word;
+    }
+    
+    @media (min-width: 760px) {
+      .modal-backdrop {
+        align-items: center;
+      }
+    
+      .basic-modal {
+        border-radius: 26px;
+      }
+    }
   </style>
 </head>
 
@@ -718,9 +843,43 @@
   </div>
 
   <div class="toast" id="toast"></div>
+    <div class="modal-backdrop" id="basicInfoModal">
+    <div class="basic-modal">
+      <div class="basic-modal-head">
+        <div class="basic-modal-title">
+          <h3 id="basicInfoTitle">基本資料</h3>
+          <p id="basicInfoAccount"></p>
+        </div>
+  
+        <button class="modal-close-btn" type="button" id="basicInfoCloseBtn">×</button>
+      </div>
+  
+      <div class="basic-modal-body">
+        <div class="basic-info-row">
+          <span class="key">地址</span>
+          <span class="value" id="basicInfoAddress">-</span>
+        </div>
+  
+        <div class="basic-info-row">
+          <span class="key">聯絡電話</span>
+          <span class="value" id="basicInfoPhone">-</span>
+        </div>
+  
+        <div class="basic-info-row">
+          <span class="key">銀行代碼</span>
+          <span class="value" id="basicInfoBankCode">-</span>
+        </div>
+  
+        <div class="basic-info-row">
+          <span class="key">後五碼</span>
+          <span class="value" id="basicInfoBankLast5">-</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycby7EfU8D75EEzbxxcb5W71ujEFeSO_5UVohkLov0e-UUup_UckRQezO_k4xjzUGnc4k/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyd86Vyo48WbZMi3gP_6uJlKNb3BWiDV-2cbjpYFI3D2TfzkNAyiwk-pPuiXWFG9w/exec';
 
     const state = {
       members: [],
@@ -741,7 +900,15 @@
       refreshBtn: document.getElementById('refreshBtn'),
       searchInput: document.getElementById('searchInput'),
       filterTabs: document.getElementById('filterTabs'),
-      toast: document.getElementById('toast')
+      toast: document.getElementById('toast'),
+      basicInfoModal: document.getElementById('basicInfoModal'),
+      basicInfoCloseBtn: document.getElementById('basicInfoCloseBtn'),
+      basicInfoTitle: document.getElementById('basicInfoTitle'),
+      basicInfoAccount: document.getElementById('basicInfoAccount'),
+      basicInfoAddress: document.getElementById('basicInfoAddress'),
+      basicInfoPhone: document.getElementById('basicInfoPhone'),
+      basicInfoBankCode: document.getElementById('basicInfoBankCode'),
+      basicInfoBankLast5: document.getElementById('basicInfoBankLast5')
     };
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -768,6 +935,34 @@
 
         state.filter = btn.dataset.filter;
         renderMembers();
+      });
+      el.memberList.addEventListener('click', event => {
+        const btn = event.target.closest('.basic-info-btn');
+        if (!btn) return;
+      
+        const index = Number(btn.dataset.index);
+        const members = getFilteredMembers();
+        const member = members[index];
+      
+        if (!member) return;
+      
+        openBasicInfoModal(member);
+      });
+      
+      el.basicInfoCloseBtn.addEventListener('click', () => {
+        closeBasicInfoModal();
+      });
+      
+      el.basicInfoModal.addEventListener('click', event => {
+        if (event.target === el.basicInfoModal) {
+          closeBasicInfoModal();
+        }
+      });
+      
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          closeBasicInfoModal();
+        }
       });
     }
 
@@ -859,7 +1054,7 @@
         return;
       }
 
-      el.memberList.innerHTML = members.map(member => createMemberCard(member)).join('');
+      el.memberList.innerHTML = members.map((member, index) => createMemberCard(member, index)).join('');
     }
 
     function getFilteredMembers() {
@@ -881,7 +1076,7 @@
       });
     }
 
-    function createMemberCard(member) {
+    function createMemberCard(member, index) {
       const daysText = formatLeftTime(member);
       const timeRow = member.statusLevel === 'trial'
         ? infoRow('試用限制', '內建 15 分鐘')
@@ -894,9 +1089,15 @@
               <h3>${escapeHtml(member.name)}</h3>
               <p>${escapeHtml(member.account || '無帳號資料')}</p>
             </div>
-            <span class="badge ${escapeHtml(member.statusLevel)}">
-              ${escapeHtml(member.status)}
-            </span>
+            <div style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
+              <button class="basic-info-btn" type="button" data-index="${index}">
+                基本資料
+              </button>
+            
+              <span class="badge ${escapeHtml(member.statusLevel)}">
+                ${escapeHtml(member.status)}
+              </span>
+            </div>
           </div>
 
           <div class="info-grid">
@@ -947,6 +1148,23 @@
       }
 
       return `${member.daysLeft} 天`;
+    }
+    function openBasicInfoModal(member) {
+      el.basicInfoTitle.textContent = member.name || '基本資料';
+      el.basicInfoAccount.textContent = member.account || '';
+    
+      el.basicInfoAddress.textContent = member.address || '-';
+      el.basicInfoPhone.textContent = member.phone || '-';
+      el.basicInfoBankCode.textContent = member.bankCode || '-';
+      el.basicInfoBankLast5.textContent = member.bankLast5 || '-';
+    
+      el.basicInfoModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeBasicInfoModal() {
+      el.basicInfoModal.classList.remove('show');
+      document.body.style.overflow = '';
     }
 
     function showError(message) {
